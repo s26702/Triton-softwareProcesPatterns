@@ -47,7 +47,6 @@ export default function VolunteerDashboard({ profile, onLogout }: { profile: Use
       <main className="py-9">
         <h1 className="text-3xl font-semibold tracking-tight">{selection?'Review your shift':event?event.name:view}</h1>
         <p className="mt-3 break-words text-sm text-neutral-600">Signed in as {profile.email}</p>
-        <p className="mt-2 text-sm text-neutral-600">Demo events, registrations and messages. Changes reset when you leave or reload this page.</p>
         {notice && <p role="status" className="mt-6 border-b border-neutral-300 py-4">{notice}</p>}
         {error && <p role="alert" className="mt-6 text-red-800">{error}</p>}
         {selection ? <section className="mt-8 max-w-2xl"><button className={button} onClick={()=>setSelection(null)}>Back to shifts</button><h2 className="mt-7 text-xl font-semibold">{selection.shift.name}</h2><dl className="mt-5 grid grid-cols-[90px_1fr] gap-4 text-sm sm:grid-cols-[120px_1fr]">{Object.entries({Event:selection.event.name,Date:`${selection.event.day} May 2027`,Time:selection.shift.time,Location:selection.shift.place,Meeting:selection.shift.meet,Task:selection.shift.task,Bring:selection.shift.need}).map(([key,value])=><div key={key} className="contents"><dt className="text-neutral-600">{key}</dt><dd>{value}</dd></div>)}</dl>{registered(selection.event,selection.shift)?<div className="mt-6"><p>Registered in this demo.</p><button className={`${button} mt-4`} onClick={()=>navigate('Messages')}>Message coordinator</button><p className="mt-3 text-sm text-neutral-600">To change or cancel a shift, contact your coordinator.</p></div>:<><label className="mt-6 flex items-start gap-3 text-sm"><input type="checkbox" className="mt-1 accent-[#FF0000]" checked={accepted} onChange={e=>setAccepted(e.target.checked)}/>I have read the task description and can attend the entire shift.</label><button className={`${primary} mt-5`} disabled={!accepted} onClick={confirm}>Confirm registration</button></>}</section>
@@ -71,9 +70,15 @@ export default function VolunteerDashboard({ profile, onLogout }: { profile: Use
                 >{day}</span>;
               })}
             </div>
-            <p className="mt-4 text-xs text-neutral-600">Underlined dates are your shifts.</p>
           </section>
-          <section className="mt-9 border-t border-neutral-200 pt-6"><h2 className="font-semibold">Need help?</h2><p className="mt-3 text-sm text-neutral-600">Ask your coordinator about tasks or meeting points.</p><button className={`${button} mt-4`} onClick={()=>navigate('Messages')}>Open messages</button></section></aside></div>
+          <div className="mt-6">
+            <button className={`${button} inline-flex items-center gap-2`} onClick={()=>navigate('Messages')}>
+              <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z" />
+              </svg>
+              Open messages
+            </button>
+          </div></aside></div>
         : view==='Find events'?<section className="mt-8 max-w-3xl">{eventList()}</section>
         : view==='My shifts'?<section className="mt-8 max-w-3xl">{bookings.length?bookings.map(b=><article key={`${b.event.id}-${b.shift.id}`} className="flex flex-wrap items-center justify-between gap-4 border-b border-neutral-200 py-5"><div><h2 className="font-semibold">{b.event.name}</h2><p className="mt-2 text-sm text-neutral-600">{b.event.day} May 2027 · {b.shift.time} · {b.shift.name}</p></div><button className={button} onClick={()=>choose(b.event,b.shift)}>View details</button></article>):<><p>No shifts yet. Browse events to choose a task and time.</p><button className={`${button} mt-5`} onClick={()=>navigate('Find events')}>Find events</button></>}</section>
         : view==='Messages'?<section className="mt-8 max-w-2xl"><h2 className="font-semibold">Coordinator · demo conversation</h2><p className="mt-3 text-sm text-neutral-600">Messages below are local previews. Nothing is sent.</p><div aria-live="polite">{messages.map((m,i)=><p key={i} className="my-5 border-b border-neutral-200 py-4 whitespace-pre-wrap break-words">{m}</p>)}</div><form className="mt-6" onSubmit={e=>{e.preventDefault();if(message.trim()){setMessages([...messages,message.trim()]);setMessage('');}}}><label className="block text-sm" htmlFor="message">Your message</label><textarea id="message" required rows={4} className="mt-2 w-full rounded-sm border border-neutral-300 p-3 focus:outline-2 focus:outline-[#FF0000]" value={message} onChange={e=>setMessage(e.target.value)}/><button className={`${button} mt-4`} disabled={!message.trim()}>Preview message</button></form></section>
