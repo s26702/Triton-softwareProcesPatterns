@@ -48,15 +48,15 @@ git clone <repository-url>
 cd Triton-softwareProcesPatterns
 ```
 
-### 3. Install Dependencies (Next.js, Supabase, etc.)
+### 3. Install Dependencies (Next.js, Supabase, Vitest, etc.)
 
-All project libraries (including **Next.js 16**, **React 19**, and **@supabase/supabase-js**) are defined in `package.json`. Install them by running:
+All project libraries (including **Next.js 16**, **React 19**, **@supabase/supabase-js**, and **Vitest**) are defined in `package.json`. Install them by running:
 
 ```bash
 npm install
 ```
 
-> **Note:** This installs all packages into the local `node_modules/` folder. You do not need to install Next.js or Supabase globally.
+> **Note:** This installs all packages (including testing tools) into the local `node_modules/` folder. You do not need to install Next.js, Supabase, or Vitest globally. If new dependencies are added later, simply re-run `npm install` after pulling changes.
 
 ---
 
@@ -108,6 +108,8 @@ Open [http://localhost:3000](http://localhost:3000) in your browser. The app wil
 | `npm run build` | Compiles the production build |
 | `npm run start` | Runs the compiled production server |
 | `npm run lint` | Runs ESLint to check for code quality and syntax issues |
+| `npm test` | Runs Vitest in interactive watch mode |
+| `npm run test:run` | Runs the full unit and component test suite once |
 
 ---
 

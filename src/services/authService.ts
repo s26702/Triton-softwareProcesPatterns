@@ -8,12 +8,40 @@ export interface UserProfile {
 
 export interface IAuthRepository {
   signIn(email: string, password: string): Promise<UserProfile>;
+  signUp(email: string, password: string, role: UserRole): Promise<UserProfile>;
   getCurrentUser(): Promise<UserProfile | null>;
   signOut(): Promise<void>;
 }
 
 export class AuthService {
   constructor(private authRepo: IAuthRepository) {}
+
+  async register(
+    email: string,
+    password: string,
+    confirmPassword: string,
+    role: UserRole,
+  ): Promise<{ profile: UserProfile; redirectUrl: string }> {
+    const cleanEmail = email.trim();
+
+    if (!cleanEmail || !cleanEmail.includes('@')) {
+      throw new Error('Please enter a valid email address.');
+    }
+    if (!password || password.length < 6) {
+      throw new Error('Password must be at least 6 characters.');
+    }
+    if (password !== confirmPassword) {
+      throw new Error('Passwords do not match.');
+    }
+
+    const profile = await this.authRepo.signUp(cleanEmail, password, role);
+
+    const redirectUrl = profile.role === 'organizer'
+      ? '/organizer-dashboard'
+      : '/volunteer-dashboard';
+
+    return { profile, redirectUrl };
+  }
 
   async login(email: string, password: string): Promise<{ profile: UserProfile; redirectUrl: string }> {
     const cleanEmail = email.trim();
